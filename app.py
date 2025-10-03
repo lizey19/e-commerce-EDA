@@ -82,15 +82,17 @@ if uploaded_file:
     st.dataframe(revenue_per_customer.sort_values(ascending=False).head(10))
 
     # -------------------------
-    # 📊 Pricing & Discounts
+       # -------------------------
+    # 📊 Pricing & Discounts 
     # -------------------------
     st.header("📊 Pricing & Discounts")
+
     st.subheader("Price Distribution")
     fig, ax = plt.subplots()
     sns.histplot(df['price'], bins=40, kde=True, ax=ax)
     st.pyplot(fig)
 
-       st.subheader("Revenue vs Quantity")
+    st.subheader("Revenue vs Quantity")
     fig, ax = plt.subplots()
     sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.5, ax=ax)
     st.pyplot(fig)
@@ -104,6 +106,7 @@ if uploaded_file:
     )
     ax.set_xlabel("Discount Quintiles")
     st.pyplot(fig)
+
 
 
     # -------------------------
