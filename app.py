@@ -1,3 +1,4 @@
+# ecommerce_eda.py
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,36 +7,22 @@ import seaborn as sns
 st.set_page_config(page_title="🛒 E-commerce EDA", layout="wide")
 st.title("🛒 E-commerce Exploratory Data Analysis")
 
-# File Upload
+# Upload file
 uploaded_file = st.file_uploader("Upload your E-commerce CSV", type=["csv"])
 
 if uploaded_file:
-    # Load
+    # Load data
     df = pd.read_csv(uploaded_file)
 
-    # Data Cleaning
+    # Convert date
     df['order_date'] = pd.to_datetime(df['order_date'], errors='coerce')
-    df['time'] = pd.to_datetime(df['time'], errors='coerce').dt.time
-    df['price'] = pd.to_numeric(df['price'], errors='coerce')
-    df['discount'] = pd.to_numeric(df['discount'], errors='coerce')
-    df['quantity'] = pd.to_numeric(df['quantity'], errors='coerce')
 
-    df.dropna(subset=['order_id','product_id','customer_id'], inplace=True)
-    df.drop_duplicates(subset=['order_id','product_id','customer_id'], inplace=True)
-    df = df[(df['price']>0) & (df['quantity']>0)]
-    df = df[df['discount'] <= df['price']]
-
-    # Feature Engineering
-    df['order_datetime'] = pd.to_datetime(
-        df['order_date'].astype(str) + " " + df['time'].astype(str),
-        errors='coerce'
-    )
-    df['revenue'] = df['quantity'] * (df['price'] - df['discount'])
-    df['day'] = df['order_datetime'].dt.date
-    df['week'] = df['order_datetime'].dt.isocalendar().week
-    df['month'] = df['order_datetime'].dt.to_period("M").astype(str)
-    df['hour'] = df['order_datetime'].dt.hour
-    df['dayofweek'] = df['order_datetime'].dt.day_name()
+    # Feature engineering
+    df['revenue'] = df['quantity'] * df['price'] * (1 - df['discount'])
+    df['day'] = df['order_date'].dt.date
+    df['month'] = df['order_date'].dt.to_period("M").astype(str)
+    df['hour'] = df['order_date'].dt.hour
+    df['dayofweek'] = df['order_date'].dt.day_name()
 
     # -------------------------
     # 📌 Key Metrics
@@ -66,7 +53,6 @@ if uploaded_file:
     # 🛍️ Product Insights
     # -------------------------
     st.header("🛍️ Product Insights")
-
     st.subheader("Top 10 Products by Revenue")
     top_products = df.groupby("product_id")['revenue'].sum().nlargest(10)
     st.bar_chart(top_products)
@@ -79,7 +65,6 @@ if uploaded_file:
     # 👤 Customer Insights
     # -------------------------
     st.header("👤 Customer Insights")
-
     orders_per_customer = df.groupby("customer_id")['order_id'].nunique()
     revenue_per_customer = df.groupby("customer_id")['revenue'].sum()
 
@@ -100,7 +85,6 @@ if uploaded_file:
     # 📊 Pricing & Discounts
     # -------------------------
     st.header("📊 Pricing & Discounts")
-
     st.subheader("Price Distribution")
     fig, ax = plt.subplots()
     sns.histplot(df['price'], bins=40, kde=True, ax=ax)
@@ -111,7 +95,7 @@ if uploaded_file:
     sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.5, ax=ax)
     st.pyplot(fig)
 
-    st.subheader("Discount Impact (Quintiles)")
+    st.subheader("Discount Impact on Revenue")
     fig, ax = plt.subplots()
     sns.boxplot(x=pd.qcut(df['discount'], 5, duplicates='drop'), y=df['revenue'], ax=ax)
     ax.set_xlabel("Discount Quintiles")
@@ -121,7 +105,6 @@ if uploaded_file:
     # 🌍 Regional & Payment Analysis
     # -------------------------
     st.header("🌍 Regional & Payment Insights")
-
     st.subheader("Revenue by Region")
     st.bar_chart(df.groupby("region")['revenue'].sum())
 
@@ -132,7 +115,6 @@ if uploaded_file:
     # 📅 Seasonality
     # -------------------------
     st.header("📅 Seasonality Patterns")
-
     st.subheader("Sales by Day of Week")
     st.bar_chart(df['dayofweek'].value_counts())
 
@@ -150,5 +132,6 @@ if uploaded_file:
     # -------------------------
     st.header("🔗 Correlation Heatmap")
     fig, ax = plt.subplots()
-    sns.heatmap(df[['price','discount','quantity','revenue']].corr(), annot=True, cmap="coolwarm", ax=ax)
+    sns.heatmap(df[['price','discount','quantity','revenue']].corr(),
+                annot=True, cmap="coolwarm", ax=ax)
     st.pyplot(fig)
