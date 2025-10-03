@@ -49,10 +49,11 @@ if uploaded_file:
         st.subheader("Monthly Revenue Trend")
         st.line_chart(monthly)
 
-    if uploaded_file:
+ 
     # -------------------------
     # 🛍️ Product Insights
     # -------------------------
+     if uploaded_file:
     st.header("🛍️ Product Insights")
 
     st.subheader("Top 10 Products by Revenue")
