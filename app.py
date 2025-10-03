@@ -52,14 +52,22 @@ if uploaded_file:
     # -------------------------
     # 🛍️ Product Insights
     # -------------------------
-    st.header("🛍️ Product Insights")
-    st.subheader("Top 10 Products by Revenue")
-    top_products = df.groupby("product_id")['revenue'].sum().nlargest(10)
-    st.bar_chart(top_products)
+   st.header("🛍️ Product Insights")
 
-    st.subheader("Category Revenue Share (%)")
-    category_revenue = df.groupby("category")['revenue'].sum()
-    st.bar_chart((category_revenue / category_revenue.sum() * 100).sort_values(ascending=False))
+st.subheader("Top 10 Products by Revenue")
+top_products = (
+    df.groupby("product_id")['revenue']
+    .sum()
+    .nlargest(10)                   # get top 10 products
+    .sort_values(ascending=True)    # sort ascending so bar chart shows nicely
+)
+st.bar_chart(top_products)
+
+st.subheader("Category Revenue Share (%)")
+category_revenue = df.groupby("category")['revenue'].sum()
+share = (category_revenue / category_revenue.sum() * 100).sort_values(ascending=False)
+st.bar_chart(share)
+
 
     # -------------------------
     # 👤 Customer Insights
