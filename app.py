@@ -90,16 +90,21 @@ if uploaded_file:
     sns.histplot(df['price'], bins=40, kde=True, ax=ax)
     st.pyplot(fig)
 
-    st.subheader("Revenue vs Quantity")
+       st.subheader("Revenue vs Quantity")
     fig, ax = plt.subplots()
     sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.5, ax=ax)
     st.pyplot(fig)
 
     st.subheader("Discount Impact on Revenue")
     fig, ax = plt.subplots()
-    sns.boxplot(x=pd.qcut(df['discount'], 5, duplicates='drop'), y=df['revenue'], ax=ax)
+    sns.boxplot(
+        x=pd.qcut(df['discount'], 5, duplicates='drop'),
+        y=df['revenue'],
+        ax=ax
+    )
     ax.set_xlabel("Discount Quintiles")
     st.pyplot(fig)
+
 
     # -------------------------
     # 🌍 Regional & Payment Analysis
