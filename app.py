@@ -91,11 +91,19 @@ if uploaded_file:
     st.pyplot(fig)
 
   
- st.subheader("Revenue vs Quantity (Log Scale)")
-fig, ax = plt.subplots()
-sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.4, ax=ax)
-ax.set_yscale("log")
-st.pyplot(fig)
+st.header("📊 Pricing & Discounts")
+
+    st.subheader("Price Distribution")
+    fig, ax = plt.subplots()
+    sns.histplot(df['price'], bins=40, kde=True, ax=ax)
+    st.pyplot(fig)
+
+    # ✅ Properly indented new section
+    st.subheader("Revenue vs Quantity (Log Scale)")
+    fig, ax = plt.subplots()
+    sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.4, ax=ax)
+    ax.set_yscale("log")
+    st.pyplot(fig)
 
 
 
