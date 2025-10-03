@@ -61,12 +61,17 @@ top_products = (
     .nlargest(10)                   # get top 10 products
     .sort_values(ascending=True)    # sort ascending so bar chart shows nicely
 )
-st.bar_chart(top_products)
-
 st.subheader("Category Revenue Share (%)")
 category_revenue = df.groupby("category")['revenue'].sum()
 share = (category_revenue / category_revenue.sum() * 100).sort_values(ascending=False)
-st.bar_chart(share)
+
+fig, ax = plt.subplots()
+sns.barplot(x=share.index, y=share.values, ax=ax, palette="Blues_d")
+ax.set_ylabel("Revenue Share (%)")
+for i, val in enumerate(share.values):
+    ax.text(i, val + 0.3, f"{val:.1f}%", ha="center")
+st.pyplot(fig)
+
 
 
     # -------------------------
