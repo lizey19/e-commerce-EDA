@@ -91,11 +91,12 @@ if uploaded_file:
     st.pyplot(fig)
 
   
-    st.subheader("Revenue vs Quantity (Log Scale)")
-   fig, ax = plt.subplots()
-    sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.4, ax=ax)
-   ax.set_yscale("log")
-  st.pyplot(fig)
+ st.subheader("Revenue vs Quantity (Log Scale)")
+fig, ax = plt.subplots()
+sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.4, ax=ax)
+ax.set_yscale("log")
+st.pyplot(fig)
+
 
 
     st.subheader("Discount Impact on Revenue")
