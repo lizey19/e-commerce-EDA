@@ -49,32 +49,17 @@ if uploaded_file:
         st.subheader("Monthly Revenue Trend")
         st.line_chart(monthly)
 
- 
-  if uploaded_file:
-    # everything inside here must be indented
+    # -------------------------
+    # 🛍️ Product Insights
+    # -------------------------
     st.header("🛍️ Product Insights")
-
     st.subheader("Top 10 Products by Revenue")
-    top_products = (
-        df.groupby("product_id")['revenue']
-        .sum()
-        .nlargest(10)
-        .sort_values(ascending=True)
-    )
+    top_products = df.groupby("product_id")['revenue'].sum().nlargest(10)
     st.bar_chart(top_products)
 
     st.subheader("Category Revenue Share (%)")
     category_revenue = df.groupby("category")['revenue'].sum()
-    share = (category_revenue / category_revenue.sum() * 100).sort_values(ascending=False)
-
-    fig, ax = plt.subplots()
-    sns.barplot(x=share.index, y=share.values, ax=ax, palette="Blues_d")
-    ax.set_ylabel("Revenue Share (%)")
-    for i, val in enumerate(share.values):
-        ax.text(i, val + 0.3, f"{val:.1f}%", ha="center")
-    st.pyplot(fig)
-
-
+    st.bar_chart((category_revenue / category_revenue.sum() * 100).sort_values(ascending=False))
 
     # -------------------------
     # 👤 Customer Insights
@@ -105,7 +90,11 @@ if uploaded_file:
     sns.histplot(df['price'], bins=40, kde=True, ax=ax)
     st.pyplot(fig)
 
-    
+    st.subheader("Revenue vs Quantity")
+    fig, ax = plt.subplots()
+    sns.scatterplot(x="quantity", y="revenue", data=df, alpha=0.5, ax=ax)
+    st.pyplot(fig)
+
     st.subheader("Discount Impact on Revenue")
     fig, ax = plt.subplots()
     sns.boxplot(x=pd.qcut(df['discount'], 5, duplicates='drop'), y=df['revenue'], ax=ax)
