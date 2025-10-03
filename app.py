@@ -50,10 +50,8 @@ if uploaded_file:
         st.line_chart(monthly)
 
  
-    # -------------------------
-    # 🛍️ Product Insights
-    # -------------------------
-     if uploaded_file:
+  if uploaded_file:
+    # everything inside here must be indented
     st.header("🛍️ Product Insights")
 
     st.subheader("Top 10 Products by Revenue")
